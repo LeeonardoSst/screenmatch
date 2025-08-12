@@ -6,9 +6,8 @@ import br.com.alura.screenmatch.model.DadosTemporada;
 import br.com.alura.screenmatch.service.ConsumoAPI;
 import br.com.alura.screenmatch.service.ConverteDados;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Principal {
 
@@ -42,6 +41,26 @@ public class Principal {
        // }
 
         temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
-        temporadas.forEach(System.out::println);
+
+//        List<String> nomes = Arrays.asList("Leonardo", "Rodrigo", "Djo", "Joao");
+
+//        nomes.stream()
+//                .sorted()
+//                .limit(4)
+//                .filter(n -> n.startsWith("L"))
+//                .map(n -> n.toUpperCase())
+//                .forEach(System.out::println);
+        List<DadosEpisodio> dadosEpisodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream())
+                .collect(Collectors.toList());
+                //.toList(); FICA IMUTAVEL
+
+        System.out.println("\nTop 5 Episódios");
+        dadosEpisodios.stream()
+                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed()) //ordem decrescente
+                .limit(5)
+                .forEach((System.out::println));
+
     }
 }
